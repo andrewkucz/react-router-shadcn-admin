@@ -1,6 +1,6 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { appRouter } from "~/api";
+import { appRouter } from "~/lib/trpc/router";
 import { createContext } from "~/lib/trpc/server";
 
 function handleRequest(args: LoaderFunctionArgs | ActionFunctionArgs) {

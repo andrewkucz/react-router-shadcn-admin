@@ -10,13 +10,13 @@ export const loader = async (args: Route.LoaderArgs) => {
 
 export default function Home({ loaderData }: Route.ComponentProps) {
 	const trpc = useTRPC();
-	const { data } = useQuery(trpc.hello.queryOptions());
+	const { data = [] } = useQuery(trpc.posts.list.queryOptions());
 
 	return (
 		<div>
 			<h1>Home</h1>
 			<div>User: {loaderData?.name ?? "(null)"}</div>
-			<div>{data}</div>
+			<pre>{JSON.stringify(data, null, 2)}</pre>
 		</div>
 	);
 }
