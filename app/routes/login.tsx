@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { redirect } from "react-router";
-import { Button } from "~/components/ui/button";
-import { authClient } from "~/lib/auth/browser";
-import { auth } from "~/lib/auth/server";
+import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth/browser";
+import { auth } from "@/lib/auth/server";
 import type { Route } from "./+types/login";
 
 export const loader = async ({ request }: Route.LoaderArgs) => {

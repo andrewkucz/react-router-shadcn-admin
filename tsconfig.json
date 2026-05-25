@@ -5,6 +5,8 @@
 		"**/.client/**/*",
 		".react-router/types/**/*"
 	],
+	"exclude": ["tmp"],
+
 	"compilerOptions": {
 		"lib": ["DOM", "DOM.Iterable", "ES2022"],
 		"types": ["node", "vite/client"],
@@ -13,9 +15,10 @@
 		"moduleResolution": "bundler",
 		"jsx": "react-jsx",
 		"rootDirs": [".", "./.react-router/types"],
+		"ignoreDeprecations": "6.0",
 		"baseUrl": ".",
 		"paths": {
-			"~/*": ["./app/*"]
+			"@/*": ["./app/*"]
 		},
 		"esModuleInterop": true,
 		"verbatimModuleSyntax": true,

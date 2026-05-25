@@ -1,8 +1,8 @@
-import { postsRouter } from "~/features/posts/router";
-import { router } from "~/lib/trpc/server";
+import { postsRouter } from "@/features/posts/router";
+import { router } from "@/lib/trpc/server";
 
 const appRouter = router({
-	posts: postsRouter,
+  posts: postsRouter,
 });
 
 export { appRouter };

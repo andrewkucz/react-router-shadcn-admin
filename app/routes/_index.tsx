@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { getUser } from "~/lib/auth/server-utils";
-import { useTRPC } from "~/lib/trpc/client";
+import { getUser } from "@/lib/auth/server-utils";
+import { useTRPC } from "@/lib/trpc/client";
 import type { Route } from "./+types/_index";
 
 export const loader = async (args: Route.LoaderArgs) => {
