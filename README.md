@@ -20,14 +20,12 @@ Adapted from: https://github.com/satnaing/shadcn-admin
 
 Also included:
 
-- [@tanstack/table]()
 - [nuqs](https://nuqs.dev/)
-- [@daveyplate/better-auth-tanstack](https://github.com/daveyplate/better-auth-tanstack)
-  - better-auth + @tanstack/react-query helpers
-
-
+- [@daveyplate/better-auth-tanstack](https://github.com/daveyplate/better-auth-tanstack) | better-auth + @tanstack/react-query helpers
+- [@tanstack/table]() |
 
 
 ## TODO
 - test auth flow 
+- add unauth handling + make dashboard auth only?
 - fix light mode flash based on cookie

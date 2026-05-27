@@ -6,10 +6,10 @@ import { cn } from "@/lib/utils";
 function ScrollArea({
 	className,
 	children,
-	orientation,
+	orientation = "vertical",
 	...props
 }: React.ComponentProps<typeof ScrollAreaPrimitive.Root> & {
-	orientation: "horizontal" | "vertical";
+	orientation?: "horizontal" | "vertical";
 }) {
 	return (
 		<ScrollAreaPrimitive.Root

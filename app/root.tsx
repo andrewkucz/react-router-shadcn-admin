@@ -21,7 +21,7 @@ import AuthProvider from "./lib/auth/provider";
 import { TRPCQueryClientProvider } from "./lib/trpc/provider";
 
 export function meta(args: Route.MetaArgs) {
-	return [{ title: "Site Title" }];
+	return [{ title: "Shadcn Admin Remix" }];
 }
 
 export const links: Route.LinksFunction = () => [

@@ -1,4 +1,5 @@
 import {
+	type ColumnFiltersState,
 	flexRender,
 	getCoreRowModel,
 	getFacetedRowModel,
@@ -6,12 +7,13 @@ import {
 	getFilteredRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
+	type OnChangeFn,
 	type SortingState,
 	useReactTable,
 	type VisibilityState,
 } from "@tanstack/react-table";
-import { useCallback, useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
+import { parseAsNativeArrayOf, parseAsString, useQueryState } from "nuqs";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { DataTablePagination, DataTableToolbar } from "@/components/data-table";
 import {
 	Table,
@@ -21,11 +23,8 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import {
-	createSearchParamsNavigate,
-	searchParamsToSearchRecord,
-	useTableUrlState,
-} from "@/hooks/use-table-url-state";
+import { useTableGlobalFilterState } from "@/hooks/use-table-global-filter-state";
+import { useTablePaginationState } from "@/hooks/use-table-pagination-state";
 import { cn } from "@/lib/utils";
 import { priorities, statuses } from "../data/data";
 import type { Task } from "../data/schema";
@@ -47,32 +46,60 @@ export function TasksTable({ data }: DataTableProps) {
 	// const [columnFilters, onColumnFiltersChange] = useState<ColumnFiltersState>([])
 	// const [pagination, onPaginationChange] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 })
 
-	const [search, setSearch] = useSearchParams();
+	const { pagination, resetPage, onPaginationChange, handlePageOutOfBounds } =
+		useTablePaginationState({
+			defaultPageSize: 10,
+		});
 
-	const navigate = useCallback(
-		() => createSearchParamsNavigate(setSearch),
-		[setSearch],
+	const { globalFilter, onGlobalFilterChange } =
+		useTableGlobalFilterState(resetPage);
+
+	const [statusFilter, setStatusFilter] = useQueryState(
+		"status",
+		parseAsNativeArrayOf(parseAsString),
+	);
+	const [priorityFilter, setPriorityFilter] = useQueryState(
+		"priority",
+		parseAsNativeArrayOf(parseAsString),
 	);
 
-	// Synced with URL states (updated to match route search schema defaults)
-	const {
-		globalFilter,
-		onGlobalFilterChange,
-		columnFilters,
-		onColumnFiltersChange,
-		pagination,
-		onPaginationChange,
-		ensurePageInRange,
-	} = useTableUrlState({
-		search: searchParamsToSearchRecord(search),
-		navigate,
-		pagination: { defaultPage: 1, defaultPageSize: 10 },
-		globalFilter: { enabled: true, key: "filter" },
-		columnFilters: [
-			{ columnId: "status", searchKey: "status", type: "array" },
-			{ columnId: "priority", searchKey: "priority", type: "array" },
-		],
-	});
+	const columnFilters = useMemo<ColumnFiltersState>(() => {
+		const nextColumnFilters: ColumnFiltersState = [];
+
+		if (statusFilter.length > 0) {
+			nextColumnFilters.push({ id: "status", value: statusFilter });
+		}
+
+		if (priorityFilter.length > 0) {
+			nextColumnFilters.push({ id: "priority", value: priorityFilter });
+		}
+
+		return nextColumnFilters;
+	}, [priorityFilter, statusFilter]);
+
+	const onColumnFiltersChange = useCallback<OnChangeFn<ColumnFiltersState>>(
+		(updater) => {
+			const next =
+				typeof updater === "function" ? updater(columnFilters) : updater;
+			const nextStatusFilter = next.find((filter) => filter.id === "status");
+			const nextPriorityFilter = next.find(
+				(filter) => filter.id === "priority",
+			);
+
+			void resetPage();
+			void setStatusFilter(
+				Array.isArray(nextStatusFilter?.value)
+					? nextStatusFilter.value.map(String)
+					: [],
+			);
+			void setPriorityFilter(
+				Array.isArray(nextPriorityFilter?.value)
+					? nextPriorityFilter.value.map(String)
+					: [],
+			);
+		},
+		[columnFilters, resetPage, setPriorityFilter, setStatusFilter],
+	);
 
 	// eslint-disable-next-line react-hooks/incompatible-library
 	const table = useReactTable({
@@ -108,10 +135,9 @@ export function TasksTable({ data }: DataTableProps) {
 		onColumnFiltersChange,
 	});
 
-	const pageCount = table.getPageCount();
 	useEffect(() => {
-		ensurePageInRange(pageCount);
-	}, [pageCount, ensurePageInRange]);
+		handlePageOutOfBounds(table.getPageCount(), pagination.pageIndex);
+	}, [table, pagination.pageIndex, handlePageOutOfBounds]);
 
 	return (
 		<div

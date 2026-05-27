@@ -1,4 +1,5 @@
 import {
+	type ColumnFiltersState,
 	flexRender,
 	getCoreRowModel,
 	getFacetedRowModel,
@@ -6,11 +7,13 @@ import {
 	getFilteredRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
+	type OnChangeFn,
 	type SortingState,
 	useReactTable,
 	type VisibilityState,
 } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import { parseAsNativeArrayOf, parseAsString, useQueryState } from "nuqs";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { DataTablePagination, DataTableToolbar } from "@/components/data-table";
 import {
 	Table,
@@ -20,7 +23,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { type NavigateFn, useTableUrlState } from "@/hooks/use-table-url-state";
+import { useTablePaginationState } from "@/hooks/use-table-pagination-state";
 import { cn } from "@/lib/utils";
 import { roles } from "../data/data";
 import type { User } from "../data/schema";
@@ -29,11 +32,9 @@ import { usersColumns as columns } from "./users-columns";
 
 type DataTableProps = {
 	data: User[];
-	search: Record<string, unknown>;
-	navigate: NavigateFn;
 };
 
-export function UsersTable({ data, search, navigate }: DataTableProps) {
+export function UsersTable({ data }: DataTableProps) {
 	// Local UI-only states
 	const [rowSelection, setRowSelection] = useState({});
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -43,25 +44,77 @@ export function UsersTable({ data, search, navigate }: DataTableProps) {
 	// const [columnFilters, onColumnFiltersChange] = useState<ColumnFiltersState>([])
 	// const [pagination, onPaginationChange] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 })
 
-	// Synced with URL states (keys/defaults mirror users route search schema)
-	const {
-		columnFilters,
-		onColumnFiltersChange,
-		pagination,
-		onPaginationChange,
-		ensurePageInRange,
-	} = useTableUrlState({
-		search,
-		navigate,
-		pagination: { defaultPage: 1, defaultPageSize: 10 },
-		globalFilter: { enabled: false },
-		columnFilters: [
-			// username per-column text filter
-			{ columnId: "username", searchKey: "username", type: "string" },
-			{ columnId: "status", searchKey: "status", type: "array" },
-			{ columnId: "role", searchKey: "role", type: "array" },
+	const { pagination, resetPage, onPaginationChange, handlePageOutOfBounds } =
+		useTablePaginationState({
+			defaultPageSize: 10,
+		});
+
+	const [usernameFilter, setUsernameFilter] = useQueryState(
+		"username",
+		parseAsString.withDefault(""),
+	);
+	const [statusFilter, setStatusFilter] = useQueryState(
+		"status",
+		parseAsNativeArrayOf(parseAsString),
+	);
+	const [roleFilter, setRoleFilter] = useQueryState(
+		"role",
+		parseAsNativeArrayOf(parseAsString),
+	);
+
+	const columnFilters = useMemo<ColumnFiltersState>(() => {
+		const nextColumnFilters: ColumnFiltersState = [];
+
+		if (usernameFilter.trim() !== "") {
+			nextColumnFilters.push({ id: "username", value: usernameFilter.trim() });
+		}
+
+		if (statusFilter.length > 0) {
+			nextColumnFilters.push({ id: "status", value: statusFilter });
+		}
+
+		if (roleFilter.length > 0) {
+			nextColumnFilters.push({ id: "role", value: roleFilter });
+		}
+
+		return nextColumnFilters;
+	}, [roleFilter, statusFilter, usernameFilter]);
+
+	const onColumnFiltersChange = useCallback<OnChangeFn<ColumnFiltersState>>(
+		(updater) => {
+			const next =
+				typeof updater === "function" ? updater(columnFilters) : updater;
+			const nextUsernameFilter = next.find(
+				(filter) => filter.id === "username",
+			);
+			const nextStatusFilter = next.find((filter) => filter.id === "status");
+			const nextRoleFilter = next.find((filter) => filter.id === "role");
+
+			void resetPage();
+			void setUsernameFilter(
+				typeof nextUsernameFilter?.value === "string"
+					? nextUsernameFilter.value.trim()
+					: "",
+			);
+			void setStatusFilter(
+				Array.isArray(nextStatusFilter?.value)
+					? nextStatusFilter.value.map(String)
+					: [],
+			);
+			void setRoleFilter(
+				Array.isArray(nextRoleFilter?.value)
+					? nextRoleFilter.value.map(String)
+					: [],
+			);
+		},
+		[
+			columnFilters,
+			resetPage,
+			setRoleFilter,
+			setStatusFilter,
+			setUsernameFilter,
 		],
-	});
+	);
 
 	// eslint-disable-next-line react-hooks/incompatible-library
 	const table = useReactTable({
@@ -89,8 +142,8 @@ export function UsersTable({ data, search, navigate }: DataTableProps) {
 	});
 
 	useEffect(() => {
-		ensurePageInRange(table.getPageCount());
-	}, [table, ensurePageInRange]);
+		handlePageOutOfBounds(table.getPageCount(), pagination.pageIndex);
+	}, [pagination.pageIndex, table, handlePageOutOfBounds]);
 
 	return (
 		<div
