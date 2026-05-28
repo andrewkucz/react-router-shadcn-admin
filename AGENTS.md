@@ -16,7 +16,6 @@ npm run check         # biome check (lint + format)
 
 npm run db:generate   # generate drizzle migration files
 npm run db:migrate    # run pending migrations
-npm run db:push       # push schema directly (dev only)
 npm run db:studio     # open drizzle studio
 
 npm run gen:auth      # regenerate app/db/auth.schema.ts from better-auth config
@@ -50,7 +49,7 @@ app/
 2. Import and mount it in `app/lib/trpc/router.ts`
 3. Keep feature-specific helpers like `schemas.ts`, `utils.ts`, and other supporting files inside that same feature folder instead of centralizing them elsewhere
 
-**Procedure types** (from `~/lib/trpc/server`):
+**Procedure types** (from `@/lib/trpc/server`):
 - `publicProcedure` — no auth required
 - `authProcedure` — requires active session; throws `UNAUTHORIZED` if not signed in; injects `session` into `ctx`
 
@@ -61,23 +60,23 @@ const { data } = useQuery(trpc.<router>.<procedure>.queryOptions());
 const mutation = useMutation(trpc.<router>.<procedure>.mutationOptions());
 ```
 
-`useTRPC` and `TRPCProvider`/`useTRPCClient` are exported from `~/lib/trpc/client`.
+`useTRPC` and `TRPCProvider`/`useTRPCClient` are exported from `@/lib/trpc/client`.
 
 ## Auth Conventions
 
 **Server-side** (loaders/actions):
 - `requireAuth(request)` — redirects to `/login` if unauthenticated; returns `userId`
 - `getUser(request)` — returns user object or `null`; never throws
-- Both are in `~/lib/auth/server-utils`
+- Both are in `@/lib/auth/server-utils`
 
 **Client-side:**
-- `authClient` and `useSession` from `~/lib/auth/browser`
+- `authClient` and `useSession` from `@/lib/auth/browser`
 
 Auth tables are generated — run `npm run gen:auth` after changing `app/lib/auth/server.ts`, then `npm run db:push` or `db:migrate`.
 
 ## Database Conventions
 
-- Drizzle instance exported from `~/db` as `db`
+- Drizzle instance exported from `@/db` as `db`
 - App schema in `app/db/schema.ts`; import `user` from `./auth.schema` for foreign keys
 - In handwritten Drizzle schemas, omit explicit column-name strings like `text("user_id")` or `timestamp("created_at")`; prefer `text()`/`timestamp()` so Drizzle defaults the SQL column name from the object key
 - Always use Drizzle query builder; raw SQL only when strictly necessary
@@ -91,8 +90,8 @@ Follow React Router's file-route conventions: https://reactrouter.com/how-to/fil
 
 ## Utilities & Aliases
 
-- **Path alias**: `~` → `app/` (e.g. `~/lib/utils`, `~/db`)
-- **`cn()`** utility in `~/lib/utils` — combines `clsx` + `tailwind-merge`; use for all className concatenation
+- **Path alias**: `~` → `app/` (e.g. `@/lib/utils`, `@/db`)
+- **`cn()`** utility in `@/lib/utils` — combines `clsx` + `tailwind-merge`; use for all className concatenation
 - shadcn components can be added with `shadcn` CLI
 
 ## Code Quality
