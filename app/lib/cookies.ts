@@ -21,6 +21,22 @@ export function getCookie(name: string): string | undefined {
 	return undefined;
 }
 
+export function getCookieFromReq(
+	request: Request,
+	name: string,
+): string | undefined {
+	const cookie = request.headers.get("cookie");
+	if (!cookie) return undefined;
+
+	const value = `; ${cookie}`;
+	const parts = value.split(`; ${name}=`);
+	if (parts.length === 2) {
+		const cookieValue = parts.pop()?.split(";").shift();
+		return cookieValue;
+	}
+	return undefined;
+}
+
 /**
  * Set a cookie with name, value, and optional max age
  */

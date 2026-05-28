@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { prefersLightMQ } from "@/components/layout/theme-script";
 import { getCookie, removeCookie, setCookie } from "@/lib/cookies";
 
-type Theme = "dark" | "light" | "system";
+export type Theme = "dark" | "light" | "system";
 type ResolvedTheme = Exclude<Theme, "system">;
 
 const DEFAULT_THEME = "system";
-const THEME_COOKIE_NAME = "vite-ui-theme";
+export const THEME_COOKIE_NAME = "vite-ui-theme";
 const THEME_COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
 type ThemeProviderProps = {
@@ -45,16 +46,14 @@ export function ThemeProvider({
 	// Optimized: Memoize the resolved theme calculation to prevent unnecessary re-computations
 	const resolvedTheme = useMemo((): ResolvedTheme => {
 		if (theme === "system" && typeof window !== "undefined") {
-			return window.matchMedia("(prefers-color-scheme: dark)").matches
-				? "dark"
-				: "light";
+			return window.matchMedia(prefersLightMQ).matches ? "dark" : "light";
 		}
 		return theme as ResolvedTheme;
 	}, [theme]);
 
 	useEffect(() => {
 		const root = window.document.documentElement;
-		const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+		const mediaQuery = window.matchMedia(prefersLightMQ);
 
 		const applyTheme = (currentResolvedTheme: ResolvedTheme) => {
 			root.classList.remove("light", "dark"); // Remove existing theme classes
