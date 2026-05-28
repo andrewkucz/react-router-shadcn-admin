@@ -1,7 +1,9 @@
+import { AuthQueryContext } from "@daveyplate/better-auth-tanstack";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, UserPlus } from "lucide-react";
-import { useState } from "react";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 import { IconFacebook, IconGithub } from "@/assets/brand-icons";
@@ -16,7 +18,9 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { cn, sleep } from "@/lib/utils";
+import { authClient } from "@/lib/auth/browser";
+import { useAuthMutation } from "@/lib/auth/hooks";
+import { cn } from "@/lib/utils";
 
 const formSchema = z
 	.object({
@@ -24,6 +28,7 @@ const formSchema = z
 			error: (iss) =>
 				iss.input === "" ? "Please enter your email." : undefined,
 		}),
+		name: z.string().min(1, "Name required"),
 		password: z
 			.string()
 			.min(1, "Please enter your password.")
@@ -39,7 +44,13 @@ export function SignUpForm({
 	className,
 	...props
 }: React.HTMLAttributes<HTMLFormElement>) {
-	const [isLoading, setIsLoading] = useState(false);
+	const navigate = useNavigate();
+
+	const { sessionKey: queryKey } = useContext(AuthQueryContext);
+	const { mutateAsync, isPending } = useAuthMutation({
+		queryKey,
+		mutationFn: authClient.signUp.email,
+	});
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -51,12 +62,10 @@ export function SignUpForm({
 	});
 
 	function onSubmit(data: z.infer<typeof formSchema>) {
-		setIsLoading(true);
-
-		toast.promise(sleep(2000), {
+		toast.promise(mutateAsync(data), {
 			loading: "Creating account...",
 			success: () => {
-				setIsLoading(false);
+				navigate({ pathname: "/" });
 				return `Account created for ${data.email}.`;
 			},
 			error: "Error",
@@ -78,6 +87,19 @@ export function SignUpForm({
 							<FormLabel>Email</FormLabel>
 							<FormControl>
 								<Input placeholder="name@example.com" {...field} />
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="name"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Display Name</FormLabel>
+							<FormControl>
+								<Input placeholder="John Doe" {...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -109,8 +131,8 @@ export function SignUpForm({
 						</FormItem>
 					)}
 				/>
-				<Button className="mt-2" disabled={isLoading}>
-					{isLoading ? <Loader2 className="animate-spin" /> : <UserPlus />}
+				<Button className="mt-2" disabled={isPending}>
+					{isPending ? <Loader2 className="animate-spin" /> : <UserPlus />}
 					Create Account
 				</Button>
 
@@ -130,7 +152,7 @@ export function SignUpForm({
 						variant="outline"
 						className="w-full"
 						type="button"
-						disabled={isLoading}
+						disabled={isPending}
 					>
 						<IconGithub className="h-4 w-4" /> GitHub
 					</Button>
@@ -138,7 +160,7 @@ export function SignUpForm({
 						variant="outline"
 						className="w-full"
 						type="button"
-						disabled={isLoading}
+						disabled={isPending}
 					>
 						<IconFacebook className="h-4 w-4" /> Facebook
 					</Button>

@@ -1,4 +1,4 @@
-# RR Template
+# Shadcn Admin Template (the remix)
 
 Adapted from: https://github.com/satnaing/shadcn-admin
 
@@ -26,6 +26,19 @@ Also included:
 - [@tanstack/table](https://tanstack.com/table/latest) | headless table ui
 - [@daveyplate/better-auth-tanstack](https://github.com/daveyplate/better-auth-tanstack) | better-auth + @tanstack/react-query helpers
 
+## Dev
+
+To run dev database locally:
+
+```bash
+docker compose -f docker-compose.dev.yml up -d
+
+# generate migration and apply
+npm run db:generate && npm run db:migrate
+
+# OR: push schema right to db
+npx drizzle-kit push
+```
 
 ## TODO
 - test auth flow 
