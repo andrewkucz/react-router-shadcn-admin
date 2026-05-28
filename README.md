@@ -54,12 +54,6 @@ npx drizzle-kit migrate
 
 Note: Better auth is setup and configured with email and password auth. The template has been configured so that the main dashboard is gated behind authentication. To change this behavior update the `loader` method in `app/routes/_authenticated.tsx`
 
-## Customization
-
-Generate favicon and icon assets using [RealFaviconGenerator.net](https://realfavicongenerator.net/). Go through wizard, generate zip file of assets and extract contents to `./public`
-
-Template is already configured to use these assets in `app/root.tsx`
-
 # Possible Todo
 - Proper deployment setup + working demo
 - Beautify README, add example images etc.

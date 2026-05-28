@@ -1,17 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="1000" height="1000"><metadata><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"><rdf:Description><dc:creator>RealFaviconGenerator</dc:creator><dc:source>https://realfavicongenerator.net</dc:source></rdf:Description></rdf:RDF></metadata><style>
-    #light-icon {
-      display: inline;
-    }
-    #dark-icon {
-      display: none;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      #light-icon {
-        display: none;
-      }
-      #dark-icon {
-        display: inline;
-      }
-    }
-  </style><g id="light-icon"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="1000" height="1000"><g><g transform="matrix(20.833333333333332,0,0,20.833333333333332,0,0)"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="0 0 48 48"><image width="48" height="48" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAahJREFUaEPtWO1yAiEMjE+mfTLtk2mfrDUzpIP0yAcsZ23DH3WEvWw2B2EP9OLj8OLxUxJ4toL/RoETEZ2JiD953Ijo4/7lAlJgGN9SoAXeivd9gsg0vkaAs8tZl4xzoJx5HvxgeTj/fqv+84oCwdcIfJZItAxLEEyMSUQGBL9HQALzlMe1qBFRAYbfIxAJikuJ50dUgOH3CIi81ksuJfO0+X+WQERiVmGlAmqJ9hSI1vVKAuoLr9W4qODZiVYRqM+KzVg1AqICl4gcYnKQtfs9mkB7QneTaO0ydQYihxRqLies7gB+4FoEZAETOVbNHCrAHo4ZuCz0ErACRpeQ9bzv/5NASUUq4K6ZZmKWUJbQaO2UdVlCWUI7lZDH/pgM5WG523ey3oG9A99KgtrOj/pCe7TTLt9p1hdafak3fSeEL7T6TqzezxG+0GoCQ5f61d0lDD99oXLN/HXWYsQXihi1smvB8Gd9IdO3UY5nj+9k4o/6Qm7fRiGg+U5ufKuVsHwht/3RITKNbxHo+UKzgbd8Wt/Jje8lgOw0oVhJAJrOAbBUYCBp0CVfdfm4MSMSO2sAAAAASUVORK5CYII="></image></svg></g></g></svg></g><g id="dark-icon"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="1000" height="1000"><g><g transform="matrix(20.833333333333332,0,0,20.833333333333332,0,0)"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="0 0 48 48"><image width="48" height="48" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAZQTFRFAAAA////pdmf3QAAAAJ0Uk5TAP9bkSK1AAAAfElEQVR4nGNkAANGvFRdExAxMv5rbPzXyMj85Kbzk5uMzHX2znX2jOw/H6j/fACj2H4lLPuVAKPYfwKpBzCKufbBst/7GZnvNixj3Ak0DGhyIyNDfQPDfyagRUAlDBRTEMOgRkMtglqL6hZ0dyL7AeoxqDehnoYGAeHAAgDVb2qxknf+EwAAAABJRU5ErkJggg=="></image></svg></g></g></svg></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" width="24" height="24"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokewidth="2" strokelinecap="round" strokelinejoin="round">
+  <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"></path>
+</svg><style>@media (prefers-color-scheme: light) { :root { filter: contrast(1) brightness(0.8); } }
+</style></svg>

@@ -48,27 +48,27 @@ export const links: Route.LinksFunction = () => [
 	},
 	{
 		rel: "icon",
-		type: "image/png",
-		sizes: "96x96",
-		href: "/favicon-96x96.png",
+		type: "image/svg+xml",
+		href: "/favicon.svg",
+		media: "(prefers-color-scheme: light)",
 	},
 	{
 		rel: "icon",
 		type: "image/svg+xml",
-		href: "/favicon.svg",
+		href: "/favicon_light.svg",
+		media: "(prefers-color-scheme: dark)",
 	},
 	{
-		rel: "shortcut icon",
-		href: "/favicon.ico",
+		rel: "icon",
+		type: "image/png",
+		href: "/favicon.png",
+		media: "(prefers-color-scheme: light)",
 	},
 	{
-		rel: "apple-touch-icon",
-		sizes: "180x180",
-		href: "/apple-touch-icon.png",
-	},
-	{
-		rel: "manifest",
-		href: "/site.webmanifest",
+		rel: "icon",
+		type: "image/png",
+		href: "/favicon_light.png",
+		media: "(prefers-color-scheme: dark)",
 	},
 ];
 
