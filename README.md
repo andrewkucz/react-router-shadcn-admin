@@ -64,3 +64,4 @@ Template is already configured to use these assets in `app/root.tsx`
 - Proper deployment setup + working demo
 - Beautify README, add example images etc.
 - 1 central configuration for site name, description, etc
+- Email sending configuration with Resend?

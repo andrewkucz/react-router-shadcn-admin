@@ -3,7 +3,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { redirect } from "react-router";
 import { AuthenticatedLayout } from "@/components/layout/authenticated-layout";
 import { auth } from "@/lib/auth/server";
-import { getServerQueryClient } from "@/lib/trpc/server";
+import { getServerQueryClient } from "@/lib/trpc/server.utils";
 import type { Route } from "./+types/_authenticated";
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
