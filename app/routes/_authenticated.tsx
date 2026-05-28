@@ -1,12 +1,36 @@
-import type { LoaderFunctionArgs } from "react-router";
+import { prefetchSession } from "@daveyplate/better-auth-tanstack/server";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { redirect } from "react-router";
 import { AuthenticatedLayout } from "@/components/layout/authenticated-layout";
-// import { requireAuth } from "@/lib/auth/server-utils";
+import { auth } from "@/lib/auth/server";
+import { getServerQueryClient } from "@/lib/trpc/server";
+import type { Route } from "./+types/_authenticated";
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-	// await requireAuth(request);
-	return null;
+export const loader = async ({ request }: Route.LoaderArgs) => {
+	const queryClient = getServerQueryClient();
+
+	const { session } = await prefetchSession(
+		// @ts-expect-error: TS issue with @daveyplate/better-auth-tanstack
+		auth,
+		queryClient,
+		request,
+	);
+
+	if (!session) {
+		throw redirect("/sign-in");
+	}
+
+	return {
+		dehydratedState: dehydrate(queryClient),
+	};
 };
 
-export default function AuthenticatedRouteLayout() {
-	return <AuthenticatedLayout />;
+export default function AuthenticatedRouteLayout({
+	loaderData,
+}: Route.ComponentProps) {
+	return (
+		<HydrationBoundary state={loaderData.dehydratedState}>
+			<AuthenticatedLayout />
+		</HydrationBoundary>
+	);
 }
