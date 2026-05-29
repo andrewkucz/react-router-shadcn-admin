@@ -1,10 +1,8 @@
-import { AuthQueryContext } from "@daveyplate/better-auth-tanstack";
+import { useSignInEmail } from "@better-auth-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, LogIn } from "lucide-react";
-import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
-import { toast } from "sonner";
 import { z } from "zod";
 import { IconFacebook, IconGithub } from "@/assets/brand-icons";
 import { PasswordInput } from "@/components/password-input";
@@ -19,7 +17,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth/browser";
-import { useAuthMutation } from "@/lib/auth/hooks";
 import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
@@ -43,10 +40,11 @@ export function UserAuthForm({
 }: UserAuthFormProps) {
 	const navigate = useNavigate();
 
-	const { sessionKey: queryKey } = useContext(AuthQueryContext);
-	const { mutateAsync, isPending } = useAuthMutation({
-		queryKey,
-		mutationFn: authClient.signIn.email,
+	const { mutate, isPending } = useSignInEmail(authClient, {
+		onSuccess() {
+			const targetPath = redirectTo || "/";
+			navigate({ pathname: targetPath }, { replace: true });
+		},
 	});
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -58,16 +56,7 @@ export function UserAuthForm({
 	});
 
 	function onSubmit(data: z.infer<typeof formSchema>) {
-		toast.promise(mutateAsync(data), {
-			loading: "Signing in...",
-			success: () => {
-				// Redirect to the stored location or default to dashboard
-				const targetPath = redirectTo || "/";
-				navigate({ pathname: targetPath }, { replace: true });
-				return `Welcome back, ${data.email}!`;
-			},
-			error: "Error",
-		});
+		mutate(data);
 	}
 
 	return (

@@ -17,6 +17,7 @@ Adapted from: https://github.com/satnaing/shadcn-admin
 - Drizzle ORM
   - Postgres
 - Better Auth
+  - Better Auth UI
 - tRPC
   - React Query 
 
@@ -25,7 +26,6 @@ Also included:
 - [biome](https://biomejs.dev/guides/getting-started/) | formatting and linting
 - [nuqs](https://nuqs.dev/) | url query param management
 - [@tanstack/table](https://tanstack.com/table/latest) | headless table ui
-- [@daveyplate/better-auth-tanstack](https://github.com/daveyplate/better-auth-tanstack) | better-auth + @tanstack/react-query helpers
 
 ## Dev
 
@@ -59,3 +59,4 @@ Note: Better auth is setup and configured with email and password auth. The temp
 - Beautify README, add example images etc.
 - 1 central configuration for site name, description, etc
 - Email sending configuration with Resend?
+- Better auth form feedback + toasts

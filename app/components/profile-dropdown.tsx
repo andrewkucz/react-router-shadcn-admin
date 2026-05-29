@@ -1,3 +1,4 @@
+import { useSession } from "@better-auth-ui/react";
 import { Link } from "react-router";
 import { SignOutDialog } from "@/components/sign-out-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -13,12 +14,12 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import useDialogState from "@/hooks/use-dialog-state";
-import { useSession } from "@/lib/auth/hooks";
+import { authClient } from "@/lib/auth/browser";
 import { getSessionUserDisplay } from "@/lib/auth/user-display";
 
 export function ProfileDropdown() {
 	const [open, setOpen] = useDialogState();
-	const { data: session } = useSession();
+	const { data: session } = useSession(authClient);
 	const user = getSessionUserDisplay(session?.user);
 
 	return (

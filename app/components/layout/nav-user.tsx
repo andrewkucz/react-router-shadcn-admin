@@ -1,3 +1,4 @@
+import { useSession } from "@better-auth-ui/react";
 import {
 	BadgeCheck,
 	Bell,
@@ -25,13 +26,13 @@ import {
 	useSidebar,
 } from "@/components/ui/sidebar";
 import useDialogState from "@/hooks/use-dialog-state";
-import { useSession } from "@/lib/auth/hooks";
+import { authClient } from "@/lib/auth/browser";
 import { getSessionUserDisplay } from "@/lib/auth/user-display";
 
 export function NavUser() {
 	const { isMobile } = useSidebar();
 	const [open, setOpen] = useDialogState();
-	const { data: session } = useSession();
+	const { data: session } = useSession(authClient);
 	const user = getSessionUserDisplay(session?.user);
 
 	return (

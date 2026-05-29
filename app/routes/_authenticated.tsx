@@ -1,4 +1,4 @@
-import { prefetchSession } from "@daveyplate/better-auth-tanstack/server";
+import { ensureSession } from "@better-auth-ui/react/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { redirect } from "react-router";
 import { AuthenticatedLayout } from "@/components/layout/authenticated-layout";
@@ -9,15 +9,16 @@ import type { Route } from "./+types/_authenticated";
 export const loader = async ({ request }: Route.LoaderArgs) => {
 	const queryClient = getServerQueryClient();
 
-	const { session } = await prefetchSession(
-		// @ts-expect-error: TS issue with @daveyplate/better-auth-tanstack
-		auth,
-		queryClient,
-		request,
-	);
+	const session = await ensureSession(queryClient, auth, {
+		headers: request.headers,
+	});
 
 	if (!session) {
-		throw redirect("/sign-in");
+		const currentPath = new URL(request.url).pathname;
+		const redirectPath =
+			currentPath && currentPath !== "/" ? `?redirect=${currentPath}` : "";
+
+		throw redirect(`/sign-in${redirectPath}`);
 	}
 
 	return {
