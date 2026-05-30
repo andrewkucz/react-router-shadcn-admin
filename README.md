@@ -5,8 +5,8 @@ Adapted from: https://github.com/satnaing/shadcn-admin
 - Tanstack Router -> React Router v7
 - Clerk -> Better Auth
 - ESLint + Prettier -> Biome
-- + TRPC
-- + DrizzleORM (Postgres)
+- \+ TRPC
+- \+ DrizzleORM (Postgres)
 
 ## Stack
 
