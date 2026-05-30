@@ -17,3 +17,12 @@
  *   }
  */
 export const fonts = ["inter", "manrope", "system"] as const;
+
+export type Font = (typeof fonts)[number];
+
+export const DEFAULT_FONT: Font = fonts[0];
+export const FONT_COOKIE_NAME = "font";
+
+export function isFont(value: string): value is Font {
+	return fonts.includes(value as Font);
+}

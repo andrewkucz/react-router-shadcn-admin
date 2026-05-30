@@ -93,7 +93,7 @@ const mutation = useMutation(trpc.<router>.<procedure>.mutationOptions());
 
 **Client-side:**
 - `authClient` from `@/lib/auth/browser`
-- `useSession` from `@/lib/auth/hooks`
+- helper hooks exported from `@better-auth-ui/react` library
 
 Auth tables are generated. After changing `app/lib/auth/server.ts`, run `npm run gen:auth`. Only generate and apply a migration when the user explicitly asks for schema changes to be committed.
 

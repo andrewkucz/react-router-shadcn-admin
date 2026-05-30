@@ -1,10 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { fonts } from "@/config/fonts";
+import {
+	DEFAULT_FONT,
+	FONT_COOKIE_NAME,
+	type Font,
+	fonts,
+} from "@/config/fonts";
 import { getCookie, removeCookie, setCookie } from "@/lib/cookies";
 
-type Font = (typeof fonts)[number];
-
-const FONT_COOKIE_NAME = "font";
 const FONT_COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
 type FontContextType = {
@@ -15,22 +17,30 @@ type FontContextType = {
 
 const FontContext = createContext<FontContextType | null>(null);
 
-export function FontProvider({ children }: { children: React.ReactNode }) {
+function applyFontClass(font: Font) {
+	const root = document.documentElement;
+	root.classList.forEach((cls) => {
+		if (cls.startsWith("font-")) root.classList.remove(cls);
+	});
+	if (font !== "system") {
+		root.classList.add(`font-${font}`);
+	}
+}
+
+export function FontProvider({
+	children,
+	initialFont = DEFAULT_FONT,
+}: {
+	children: React.ReactNode;
+	initialFont?: Font;
+}) {
 	const [font, _setFont] = useState(() => {
-		const savedFont = getCookie(FONT_COOKIE_NAME, fonts[0] as Font);
-		return fonts.includes(savedFont) ? savedFont : fonts[0];
+		const savedFont = getCookie(FONT_COOKIE_NAME, initialFont);
+		return fonts.includes(savedFont) ? savedFont : initialFont;
 	});
 
 	useEffect(() => {
-		const applyFont = (font: string) => {
-			const root = document.documentElement;
-			root.classList.forEach((cls) => {
-				if (cls.startsWith("font-")) root.classList.remove(cls);
-			});
-			root.classList.add(`font-${font}`);
-		};
-
-		applyFont(font);
+		applyFontClass(font);
 	}, [font]);
 
 	const setFont = (font: Font) => {
@@ -40,7 +50,7 @@ export function FontProvider({ children }: { children: React.ReactNode }) {
 
 	const resetFont = () => {
 		removeCookie(FONT_COOKIE_NAME);
-		_setFont(fonts[0]);
+		_setFont(DEFAULT_FONT);
 	};
 
 	return (
