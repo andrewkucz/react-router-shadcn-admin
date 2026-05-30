@@ -44,7 +44,7 @@ app/
   features/<feature>/   # feature-scoped UI/data modules; server procedures live here when needed
   components/           # shared UI, layouts, and data-table building blocks
   hooks/                # reusable React hooks, including nuqs-backed table state
-  context/              # theme, direction, layout, and search providers
+  context/              # theme, layout, and search providers
   lib/
     trpc/               # tRPC setup (server, client, query client, provider, auth plugin)
     auth/               # Better Auth setup (server, browser, hooks, provider, server utils)

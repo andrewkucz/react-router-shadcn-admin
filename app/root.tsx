@@ -11,7 +11,6 @@ import {
 import type { Route } from "./+types/root";
 import { NavigationProgress } from "./components/navigation-progress";
 import { Toaster } from "./components/ui/sonner";
-import { DirectionProvider } from "./context/direction-provider";
 import { ThemeProvider } from "./context/theme-provider";
 import { GeneralError } from "./features/errors/general-error";
 import { NotFoundError } from "./features/errors/not-found-error";
@@ -85,7 +84,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 	const theme = data?.theme ?? DEFAULT_THEME;
 
 	return (
-		<html lang="en" className={theme} suppressHydrationWarning>
+		<html lang="en" dir="ltr" className={theme} suppressHydrationWarning>
 			<head>
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -97,11 +96,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<NuqsAdapter>
 					<TRPCQueryClientProvider>
 						<ThemeProvider>
-							<DirectionProvider>
-								<NavigationProgress />
-								{children}
-								<Toaster duration={5000} />
-							</DirectionProvider>
+							<NavigationProgress />
+							{children}
+							<Toaster duration={5000} />
 						</ThemeProvider>
 					</TRPCQueryClientProvider>
 				</NuqsAdapter>

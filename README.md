@@ -54,6 +54,24 @@ npx drizzle-kit migrate
 
 Note: Better auth is setup and configured with email and password auth. The template has been configured so that the main dashboard is gated behind authentication. To change this behavior update the `loader` method in `app/routes/_authenticated.tsx`
 
+## Customization
+
+### Fonts
+
+Update the tailwind theme variable(s) in `app/styles/theme.css` ([docs](https://tailwindcss.com/docs/theme))
+
+Update the root stylesheet preload link in `app/root.tsx`:
+
+```
+	{
+		rel: "stylesheet",
+		href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+	},
+```
+
+Browse [Google Fonts](https://fonts.google.com/)
+
+
 # Possible Todo
 - Proper deployment setup + working demo
 - Beautify README, add example images etc.

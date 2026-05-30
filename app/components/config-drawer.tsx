@@ -1,7 +1,6 @@
 import { CircleCheck, RotateCcw, Settings } from "lucide-react";
 import { RadioGroup } from "radix-ui";
 import type { SVGProps } from "react";
-import { IconDir } from "@/assets/custom/icon-dir";
 import { IconLayoutCompact } from "@/assets/custom/icon-layout-compact";
 import { IconLayoutDefault } from "@/assets/custom/icon-layout-default";
 import { IconLayoutFull } from "@/assets/custom/icon-layout-full";
@@ -21,7 +20,6 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "@/components/ui/sheet";
-import { useDirection } from "@/context/direction-provider";
 import { type Collapsible, useLayout } from "@/context/layout-provider";
 import { useTheme } from "@/context/theme-provider";
 import { DEFAULT_THEME } from "@/lib/theme/utils";
@@ -30,13 +28,11 @@ import { useSidebar } from "./ui/sidebar";
 
 export function ConfigDrawer() {
 	const { setOpen } = useSidebar();
-	const { resetDir } = useDirection();
 	const { resetTheme } = useTheme();
 	const { resetLayout } = useLayout();
 
 	const handleReset = () => {
 		setOpen(true);
-		resetDir();
 		resetTheme();
 		resetLayout();
 	};
@@ -64,7 +60,6 @@ export function ConfigDrawer() {
 					<ThemeConfig />
 					<SidebarConfig />
 					<LayoutConfig />
-					<DirConfig />
 				</div>
 				<SheetFooter className="gap-2">
 					<Button
@@ -314,49 +309,6 @@ function LayoutConfig() {
 			</RadioGroup.Root>
 			<div id="layout-description" className="sr-only">
 				Choose between default expanded, compact icon-only, or full layout mode
-			</div>
-		</div>
-	);
-}
-
-function DirConfig() {
-	const { defaultDir, dir, setDir } = useDirection();
-	return (
-		<div>
-			<SectionTitle
-				title="Direction"
-				showReset={defaultDir !== dir}
-				onReset={() => setDir(defaultDir)}
-				resetAriaLabel="Reset text direction to default"
-			/>
-			<RadioGroup.Root
-				value={dir}
-				onValueChange={setDir}
-				className="grid w-full max-w-md grid-cols-3 gap-4"
-				aria-label="Select site direction"
-				aria-describedby="direction-description"
-			>
-				{[
-					{
-						value: "ltr",
-						label: "Left to Right",
-						icon: (props: SVGProps<SVGSVGElement>) => (
-							<IconDir dir="ltr" {...props} />
-						),
-					},
-					{
-						value: "rtl",
-						label: "Right to Left",
-						icon: (props: SVGProps<SVGSVGElement>) => (
-							<IconDir dir="rtl" {...props} />
-						),
-					},
-				].map((item) => (
-					<RadioGroupItem key={item.value} item={item} />
-				))}
-			</RadioGroup.Root>
-			<div id="direction-description" className="sr-only">
-				Choose between left-to-right or right-to-left site direction
 			</div>
 		</div>
 	);
