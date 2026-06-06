@@ -1,3 +1,4 @@
+import { useAtomValue } from "jotai";
 import {
 	Sidebar,
 	SidebarContent,
@@ -5,7 +6,7 @@ import {
 	SidebarHeader,
 	SidebarRail,
 } from "@/components/ui/sidebar";
-import { useLayout } from "@/context/layout-provider";
+import { layoutCollapsibleAtom, layoutVariantAtom } from "@/stores/layout";
 // import { AppTitle } from './app-title'
 import { sidebarData } from "./data/sidebar-data";
 import { NavGroup } from "./nav-group";
@@ -13,7 +14,9 @@ import { NavUser } from "./nav-user";
 import { TeamSwitcher } from "./team-switcher";
 
 export function AppSidebar() {
-	const { collapsible, variant } = useLayout();
+	const collapsible = useAtomValue(layoutCollapsibleAtom);
+	const variant = useAtomValue(layoutVariantAtom);
+
 	return (
 		<Sidebar collapsible={collapsible} variant={variant}>
 			<SidebarHeader>

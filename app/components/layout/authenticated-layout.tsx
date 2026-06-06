@@ -2,10 +2,10 @@ import { Outlet } from "react-router";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { SkipToMain } from "@/components/skip-to-main";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { LayoutProvider } from "@/context/layout-provider";
-import { SearchProvider } from "@/context/search-provider";
 import { getCookie } from "@/lib/cookies";
 import { cn } from "@/lib/utils";
+import { LayoutProvider } from "@/stores/layout";
+import { SearchProvider } from "@/stores/search-provider";
 
 type AuthenticatedLayoutProps = {
 	children?: React.ReactNode;

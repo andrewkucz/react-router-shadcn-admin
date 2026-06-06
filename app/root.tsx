@@ -11,9 +11,9 @@ import {
 import type { Route } from "./+types/root";
 import { NavigationProgress } from "./components/navigation-progress";
 import { Toaster } from "./components/ui/sonner";
-import { ThemeProvider } from "./context/theme-provider";
 import { GeneralError } from "./features/errors/general-error";
 import { NotFoundError } from "./features/errors/not-found-error";
+import { ThemeProvider } from "./stores/theme-provider";
 import "./styles/index.css";
 import { NuqsAdapter } from "nuqs/adapters/react-router/v7";
 import { ThemeScript } from "@/components/layout/theme-script";

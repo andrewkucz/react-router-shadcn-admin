@@ -1,3 +1,5 @@
+import { useAtom, useAtomValue } from "jotai";
+import { useResetAtom } from "jotai/utils";
 import { CircleCheck, RotateCcw, Settings } from "lucide-react";
 import { RadioGroup } from "radix-ui";
 import type { SVGProps } from "react";
@@ -20,21 +22,29 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "@/components/ui/sheet";
-import { type Collapsible, useLayout } from "@/context/layout-provider";
-import { useTheme } from "@/context/theme-provider";
 import { DEFAULT_THEME } from "@/lib/theme/utils";
 import { cn } from "@/lib/utils";
+import {
+	type Collapsible,
+	layoutCollapsibleAtom,
+	layoutVariantAtom,
+	layoutVariantDirtyAtom,
+	type Variant,
+} from "@/stores/layout";
+import { useTheme } from "@/stores/theme-provider";
 import { useSidebar } from "./ui/sidebar";
 
 export function ConfigDrawer() {
 	const { setOpen } = useSidebar();
 	const { resetTheme } = useTheme();
-	const { resetLayout } = useLayout();
+	const resetLayoutVariant = useResetAtom(layoutVariantAtom);
+	const resetLayoutCollapsible = useResetAtom(layoutCollapsibleAtom);
 
 	const handleReset = () => {
 		setOpen(true);
 		resetTheme();
-		resetLayout();
+		resetLayoutVariant();
+		resetLayoutCollapsible();
 	};
 
 	return (
@@ -213,18 +223,22 @@ function ThemeConfig() {
 }
 
 function SidebarConfig() {
-	const { defaultVariant, variant, setVariant } = useLayout();
+	const [variant, setVariant] = useAtom(layoutVariantAtom);
+
+	const resetLayoutVariant = useResetAtom(layoutVariantAtom);
+	const isLayoutVariantDirty = useAtomValue(layoutVariantDirtyAtom);
+
 	return (
 		<div className="max-md:hidden">
 			<SectionTitle
 				title="Sidebar"
-				showReset={defaultVariant !== variant}
-				onReset={() => setVariant(defaultVariant)}
+				showReset={isLayoutVariantDirty}
+				onReset={resetLayoutVariant}
 				resetAriaLabel="Reset sidebar style to default"
 			/>
 			<RadioGroup.Root
 				value={variant}
-				onValueChange={setVariant}
+				onValueChange={(v) => setVariant(v as Variant)}
 				className="grid w-full max-w-md grid-cols-3 gap-4"
 				aria-label="Select sidebar style"
 				aria-describedby="sidebar-description"
@@ -258,7 +272,10 @@ function SidebarConfig() {
 
 function LayoutConfig() {
 	const { open, setOpen } = useSidebar();
-	const { defaultCollapsible, collapsible, setCollapsible } = useLayout();
+
+	const [collapsible, setCollapsible] = useAtom(layoutCollapsibleAtom);
+
+	const resetLayoutCollapsible = useResetAtom(layoutVariantAtom);
 
 	const radioState = open ? "default" : collapsible;
 
@@ -269,7 +286,7 @@ function LayoutConfig() {
 				showReset={radioState !== "default"}
 				onReset={() => {
 					setOpen(true);
-					setCollapsible(defaultCollapsible);
+					resetLayoutCollapsible();
 				}}
 				resetAriaLabel="Reset layout options to default"
 			/>
