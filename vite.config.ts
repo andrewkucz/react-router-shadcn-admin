@@ -7,4 +7,9 @@ export default defineConfig({
 		tsconfigPaths: true,
 	},
 	plugins: [tailwindcss(), reactRouter()],
+	optimizeDeps: {
+		// Better Auth ships multiple server-only adapters as transitive deps.
+		// Exclude the unused Kysely adapter path from browser dep optimization.
+		exclude: ["@better-auth/kysely-adapter", "kysely"],
+	},
 });

@@ -1,4 +1,8 @@
-import { PREFERS_LIGHT_MEDIA_QUERY, type Theme } from "@/lib/theme/utils";
+import {
+	META_THEME_COLOR,
+	PREFERS_LIGHT_MEDIA_QUERY,
+	type Theme,
+} from "@/lib/theme";
 
 const clientThemeCode = `
 (() => {
@@ -43,6 +47,12 @@ export function ThemeScript({ nonce, theme }: ThemeScriptProps) {
 			<meta
 				name="color-scheme"
 				content={theme === "dark" ? "dark light" : "light dark"}
+			/>
+			<meta
+				name="theme-color"
+				content={
+					theme === "system" ? META_THEME_COLOR.light : META_THEME_COLOR[theme]
+				}
 			/>
 			<script
 				// biome-ignore lint/security/noDangerouslySetInnerHtml: okay for client theme code

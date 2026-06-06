@@ -1,5 +1,4 @@
 import { Check, Moon, Sun } from "lucide-react";
-import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -8,18 +7,10 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { useTheme } from "@/stores/theme-provider";
+import { useTheme } from "@/stores/theme";
 
 export function ThemeSwitch() {
-	const { theme, setTheme } = useTheme();
-
-	/* Update theme-color meta tag
-	 * when theme is updated */
-	useEffect(() => {
-		const themeColor = theme === "dark" ? "#020817" : "#fff";
-		const metaThemeColor = document.querySelector("meta[name='theme-color']");
-		if (metaThemeColor) metaThemeColor.setAttribute("content", themeColor);
-	}, [theme]);
+	const [theme, setTheme] = useTheme();
 
 	return (
 		<DropdownMenu modal={false}>

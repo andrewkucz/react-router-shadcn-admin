@@ -11,13 +11,13 @@ import {
 	CommandSeparator,
 } from "@/components/ui/command";
 import { useSearch } from "@/stores/search-provider";
-import { useTheme } from "@/stores/theme-provider";
+import { useSetTheme } from "@/stores/theme";
 import { sidebarData } from "./layout/data/sidebar-data";
 import { ScrollArea } from "./ui/scroll-area";
 
 export function CommandMenu() {
 	const navigate = useNavigate();
-	const { setTheme } = useTheme();
+	const setTheme = useSetTheme();
 	const { open, setOpen } = useSearch();
 
 	const runCommand = React.useCallback(

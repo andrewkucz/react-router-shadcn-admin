@@ -13,13 +13,15 @@ import { NavigationProgress } from "./components/navigation-progress";
 import { Toaster } from "./components/ui/sonner";
 import { GeneralError } from "./features/errors/general-error";
 import { NotFoundError } from "./features/errors/not-found-error";
-import { ThemeProvider } from "./stores/theme-provider";
+import { ThemeSync, themeAtom } from "./stores/theme";
 import "./styles/index.css";
 import { NuqsAdapter } from "nuqs/adapters/react-router/v7";
 import { ThemeScript } from "@/components/layout/theme-script";
-import { getCookieFromReq } from "./lib/cookies";
-import { DEFAULT_THEME, THEME_COOKIE_NAME } from "./lib/theme/utils";
+import { getAtomServerValue } from "./lib/atom-cookie";
+import { HydrateAtoms } from "./lib/hydrate-atoms";
+import { DEFAULT_THEME } from "./lib/theme";
 import { TRPCQueryClientProvider } from "./lib/trpc/provider";
+import { layoutCollapsibleAtom, layoutVariantAtom } from "./stores/layout";
 
 export function meta(args: Route.MetaArgs) {
 	return [
@@ -72,10 +74,10 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export const loader = ({ request }: Route.LoaderArgs) => {
-	const theme = getCookieFromReq(request, THEME_COOKIE_NAME, DEFAULT_THEME);
-
 	return {
-		theme,
+		theme: getAtomServerValue(request, themeAtom),
+		layoutVariant: getAtomServerValue(request, layoutVariantAtom),
+		layoutCollapsible: getAtomServerValue(request, layoutCollapsibleAtom),
 	};
 };
 
@@ -93,15 +95,22 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<Links />
 			</head>
 			<body>
-				<NuqsAdapter>
-					<TRPCQueryClientProvider>
-						<ThemeProvider>
+				<HydrateAtoms
+					init={[
+						[themeAtom, theme],
+						[layoutVariantAtom, data?.layoutVariant],
+						[layoutCollapsibleAtom, data?.layoutCollapsible],
+					]}
+				>
+					<NuqsAdapter>
+						<TRPCQueryClientProvider>
 							<NavigationProgress />
 							{children}
+							<ThemeSync />
 							<Toaster duration={5000} />
-						</ThemeProvider>
-					</TRPCQueryClientProvider>
-				</NuqsAdapter>
+						</TRPCQueryClientProvider>
+					</NuqsAdapter>
+				</HydrateAtoms>
 				<ScrollRestoration />
 				<Scripts />
 			</body>

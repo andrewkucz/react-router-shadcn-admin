@@ -22,7 +22,7 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "@/components/ui/sheet";
-import { DEFAULT_THEME } from "@/lib/theme/utils";
+import { DEFAULT_THEME, type Theme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 import {
 	type Collapsible,
@@ -31,12 +31,12 @@ import {
 	layoutVariantDirtyAtom,
 	type Variant,
 } from "@/stores/layout";
-import { useTheme } from "@/stores/theme-provider";
+import { useResetTheme, useTheme } from "@/stores/theme";
 import { useSidebar } from "./ui/sidebar";
 
 export function ConfigDrawer() {
 	const { setOpen } = useSidebar();
-	const { resetTheme } = useTheme();
+	const resetTheme = useResetTheme();
 	const resetLayoutVariant = useResetAtom(layoutVariantAtom);
 	const resetLayoutCollapsible = useResetAtom(layoutCollapsibleAtom);
 
@@ -179,7 +179,8 @@ function RadioGroupItem({
 }
 
 function ThemeConfig() {
-	const { resetTheme, theme, setTheme } = useTheme();
+	const [theme, setTheme] = useTheme();
+	const resetTheme = useResetTheme();
 	return (
 		<div>
 			<SectionTitle
@@ -190,7 +191,7 @@ function ThemeConfig() {
 			/>
 			<RadioGroup.Root
 				value={theme}
-				onValueChange={setTheme}
+				onValueChange={(v) => setTheme(v as Theme)}
 				className="grid w-full max-w-md grid-cols-3 gap-4"
 				aria-label="Select theme preference"
 				aria-describedby="theme-description"

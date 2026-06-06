@@ -7,10 +7,6 @@ export const layoutCollapsibleAtom = atomCookie<Collapsible>(
 	"layout_collapsible",
 	DEFAULT_COLLAPSIBLE,
 );
-export const layoutCollapsibleDirtyAtom = atom(
-	(get) => get(layoutCollapsibleAtom) !== DEFAULT_COLLAPSIBLE,
-);
-
 export type Variant = "inset" | "sidebar" | "floating";
 
 const DEFAULT_VARIANT: Variant = "inset";
