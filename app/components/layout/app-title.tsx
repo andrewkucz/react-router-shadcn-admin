@@ -1,16 +1,18 @@
+import { useSetAtom } from "jotai";
 import { Menu, X } from "lucide-react";
 import { Link } from "react-router";
 import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-	useSidebar,
 } from "@/components/ui/sidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { sidebarMobileOpenAtom, sidebarStateAtom } from "@/stores/sidebar";
 import { Button } from "../ui/button";
 
 export function AppTitle() {
-	const { setOpenMobile } = useSidebar();
+	const setSidebarMobileOpen = useSetAtom(sidebarMobileOpenAtom);
 	return (
 		<SidebarMenu>
 			<SidebarMenuItem>
@@ -22,7 +24,7 @@ export function AppTitle() {
 					<div>
 						<Link
 							to="/"
-							onClick={() => setOpenMobile(false)}
+							onClick={() => setSidebarMobileOpen(false)}
 							className="grid flex-1 text-start text-sm leading-tight"
 						>
 							<span className="truncate font-bold">Shadcn-Admin</span>
@@ -41,7 +43,9 @@ function ToggleSidebar({
 	onClick,
 	...props
 }: React.ComponentProps<typeof Button>) {
-	const { toggleSidebar } = useSidebar();
+	const isMobile = useIsMobile();
+	const setSidebarOpen = useSetAtom(sidebarStateAtom);
+	const setSidebarMobileOpen = useSetAtom(sidebarMobileOpenAtom);
 
 	return (
 		<Button
@@ -52,7 +56,11 @@ function ToggleSidebar({
 			className={cn("aspect-square size-8 max-md:scale-125", className)}
 			onClick={(event) => {
 				onClick?.(event);
-				toggleSidebar();
+				if (isMobile) {
+					setSidebarMobileOpen((open) => !open);
+					return;
+				}
+				setSidebarOpen((open) => !open);
 			}}
 			{...props}
 		>

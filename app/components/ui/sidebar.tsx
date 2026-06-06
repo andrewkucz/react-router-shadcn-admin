@@ -1,8 +1,9 @@
 import { cva, type VariantProps } from "class-variance-authority";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { PanelLeftIcon } from "lucide-react";
 import { Slot } from "radix-ui";
 import * as React from "react";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -21,108 +22,67 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { atomCookie } from "@/lib/atom-cookie";
 import { cn } from "@/lib/utils";
+import { sidebarMobileOpenAtom, sidebarStateAtom } from "@/stores/sidebar";
 
 const SIDEBAR_WIDTH = "16rem";
-const SIDEBAR_WIDTH_MOBILE = "18rem";
+export const SIDEBAR_WIDTH_MOBILE = "18rem";
 const SIDEBAR_WIDTH_ICON = "3rem";
-const SIDEBAR_KEYBOARD_SHORTCUT = "b";
+export const SIDEBAR_KEYBOARD_SHORTCUT = "b";
 
-type SidebarContextProps = {
-	state: "expanded" | "collapsed";
-	open: boolean;
-	setOpen: (open: boolean) => void;
-	openMobile: boolean;
-	setOpenMobile: (open: boolean) => void;
-	isMobile: boolean;
-	toggleSidebar: () => void;
-};
-
-const SidebarContext = React.createContext<SidebarContextProps | null>(null);
-
-export const sidebarStateAtom = atomCookie("sidebar_state", true);
-
-function useSidebar() {
-	const context = React.useContext(SidebarContext);
-	if (!context) {
-		throw new Error("useSidebar must be used within a SidebarProvider.");
-	}
-
-	return context;
-}
-
-function SidebarProvider({
+function SidebarWrapper({
 	className,
 	style,
 	children,
 	...props
 }: React.ComponentProps<"div">) {
 	const isMobile = useIsMobile();
-	const [openMobile, setOpenMobile] = React.useState(false);
+	const setSidebarOpen = useSetAtom(sidebarStateAtom);
+	const setSidebarMobileOpen = useSetAtom(sidebarMobileOpenAtom);
 
-	const [open, setOpen] = useAtom(sidebarStateAtom);
-
-	// Helper to toggle the sidebar.
-	const toggleSidebar = React.useCallback(() => {
-		return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open);
-	}, [isMobile, setOpen]);
-
-	// Adds a keyboard shortcut to toggle the sidebar.
-	React.useEffect(() => {
+	useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent) => {
 			if (
 				event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
 				(event.metaKey || event.ctrlKey)
 			) {
 				event.preventDefault();
-				toggleSidebar();
+
+				if (isMobile) {
+					setSidebarMobileOpen((open) => !open);
+					return;
+				}
+
+				setSidebarOpen((open) => !open);
 			}
 		};
 
 		window.addEventListener("keydown", handleKeyDown);
+
 		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [toggleSidebar]);
-
-	// We add a state so that we can do data-state="expanded" or "collapsed".
-	// This makes it easier to style the sidebar with Tailwind classes.
-	const state = open ? "expanded" : "collapsed";
-
-	const contextValue = React.useMemo<SidebarContextProps>(
-		() => ({
-			state,
-			open,
-			setOpen,
-			isMobile,
-			openMobile,
-			setOpenMobile,
-			toggleSidebar,
-		}),
-		[state, open, setOpen, isMobile, openMobile, toggleSidebar],
-	);
+	}, [isMobile, setSidebarMobileOpen, setSidebarOpen]);
 
 	return (
-		<SidebarContext.Provider value={contextValue}>
-			<TooltipProvider delayDuration={0}>
-				<div
-					data-slot="sidebar-wrapper"
-					style={
-						{
-							"--sidebar-width": SIDEBAR_WIDTH,
-							"--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
-							...style,
-						} as React.CSSProperties
-					}
-					className={cn(
-						"group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar",
-						className,
-					)}
-					{...props}
-				>
-					{children}
-				</div>
-			</TooltipProvider>
-		</SidebarContext.Provider>
+		<TooltipProvider delayDuration={0}>
+			<div
+				data-slot="sidebar-wrapper"
+				style={
+					{
+						"--sidebar-width": SIDEBAR_WIDTH,
+						"--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
+						"--sidebar-width-mobile": SIDEBAR_WIDTH_MOBILE,
+						...style,
+					} as React.CSSProperties
+				}
+				className={cn(
+					"group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar",
+					className,
+				)}
+				{...props}
+			>
+				{children}
+			</div>
+		</TooltipProvider>
 	);
 }
 
@@ -138,7 +98,9 @@ function Sidebar({
 	variant?: "sidebar" | "floating" | "inset";
 	collapsible?: "offcanvas" | "icon" | "none";
 }) {
-	const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
+	const isMobile = useIsMobile();
+	const state = useAtomValue(sidebarStateAtom) ? "expanded" : "collapsed";
+	const [openMobile, setOpenMobile] = useAtom(sidebarMobileOpenAtom);
 
 	if (collapsible === "none") {
 		return (
@@ -233,7 +195,9 @@ function SidebarTrigger({
 	onClick,
 	...props
 }: React.ComponentProps<typeof Button>) {
-	const { toggleSidebar } = useSidebar();
+	const isMobile = useIsMobile();
+	const setOpen = useSetAtom(sidebarStateAtom);
+	const setOpenMobile = useSetAtom(sidebarMobileOpenAtom);
 
 	return (
 		<Button
@@ -244,7 +208,11 @@ function SidebarTrigger({
 			className={cn("size-7", className)}
 			onClick={(event) => {
 				onClick?.(event);
-				toggleSidebar();
+				if (isMobile) {
+					setOpenMobile((open) => !open);
+					return;
+				}
+				setOpen((open) => !open);
 			}}
 			{...props}
 		>
@@ -255,7 +223,7 @@ function SidebarTrigger({
 }
 
 function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
-	const { toggleSidebar } = useSidebar();
+	const setOpen = useSetAtom(sidebarStateAtom);
 
 	return (
 		<button
@@ -263,7 +231,7 @@ function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
 			data-slot="sidebar-rail"
 			aria-label="Toggle Sidebar"
 			tabIndex={-1}
-			onClick={toggleSidebar}
+			onClick={() => setOpen((open) => !open)}
 			title="Toggle Sidebar"
 			className={cn(
 				"absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-1/2 after:w-0.5 hover:after:bg-sidebar-border sm:flex",
@@ -484,7 +452,8 @@ function SidebarMenuButton({
 	tooltip?: string | React.ComponentProps<typeof TooltipContent>;
 } & VariantProps<typeof sidebarMenuButtonVariants>) {
 	const Comp = asChild ? Slot.Root : "button";
-	const { isMobile, state } = useSidebar();
+	const isMobile = useIsMobile();
+	const state = useAtomValue(sidebarStateAtom) ? "expanded" : "collapsed";
 
 	const button = (
 		<Comp
@@ -693,9 +662,8 @@ export {
 	SidebarMenuSub,
 	SidebarMenuSubButton,
 	SidebarMenuSubItem,
-	SidebarProvider,
 	SidebarRail,
 	SidebarSeparator,
 	SidebarTrigger,
-	useSidebar,
+	SidebarWrapper,
 };

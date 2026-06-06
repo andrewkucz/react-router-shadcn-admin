@@ -23,14 +23,14 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-	useSidebar,
 } from "@/components/ui/sidebar";
 import useDialogState from "@/hooks/use-dialog-state";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { authClient } from "@/lib/auth/browser";
 import { getSessionUserDisplay } from "@/lib/auth/user-display";
 
 export function NavUser() {
-	const { isMobile } = useSidebar();
+	const isMobile = useIsMobile();
 	const [open, setOpen] = useDialogState();
 	const { data: session } = useSession(authClient);
 	const user = getSessionUserDisplay(session?.user);

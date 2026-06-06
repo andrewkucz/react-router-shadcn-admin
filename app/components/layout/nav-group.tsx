@@ -1,3 +1,4 @@
+import { useAtomValue, useSetAtom } from "jotai";
 import { ChevronRight } from "lucide-react";
 import type { ReactNode } from "react";
 import { Link, useLocation } from "react-router";
@@ -15,8 +16,9 @@ import {
 	SidebarMenuSub,
 	SidebarMenuSubButton,
 	SidebarMenuSubItem,
-	useSidebar,
 } from "@/components/ui/sidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { sidebarMobileOpenAtom, sidebarStateAtom } from "@/stores/sidebar";
 import { Badge } from "../ui/badge";
 import {
 	DropdownMenu,
@@ -34,7 +36,8 @@ import type {
 } from "./types";
 
 export function NavGroup({ title, items }: NavGroupProps) {
-	const { state, isMobile } = useSidebar();
+	const isMobile = useIsMobile();
+	const state = useAtomValue(sidebarStateAtom) ? "expanded" : "collapsed";
 	const { pathname: href } = useLocation();
 	return (
 		<SidebarGroup>
@@ -63,7 +66,7 @@ function NavBadge({ children }: { children: ReactNode }) {
 }
 
 function SidebarMenuLink({ item, href }: { item: NavLink; href: string }) {
-	const { setOpenMobile } = useSidebar();
+	const setSidebarMobileOpen = useSetAtom(sidebarMobileOpenAtom);
 	return (
 		<SidebarMenuItem>
 			<SidebarMenuButton
@@ -71,7 +74,7 @@ function SidebarMenuLink({ item, href }: { item: NavLink; href: string }) {
 				isActive={checkIsActive(href, item)}
 				tooltip={item.title}
 			>
-				<Link to={item.url} onClick={() => setOpenMobile(false)}>
+				<Link to={item.url} onClick={() => setSidebarMobileOpen(false)}>
 					{item.icon && <item.icon />}
 					<span>{item.title}</span>
 					{item.badge && <NavBadge>{item.badge}</NavBadge>}
@@ -88,7 +91,7 @@ function SidebarMenuCollapsible({
 	item: NavCollapsible;
 	href: string;
 }) {
-	const { setOpenMobile } = useSidebar();
+	const setSidebarMobileOpen = useSetAtom(sidebarMobileOpenAtom);
 	return (
 		<Collapsible
 			asChild
@@ -112,7 +115,10 @@ function SidebarMenuCollapsible({
 									asChild
 									isActive={checkIsActive(href, subItem)}
 								>
-									<Link to={subItem.url} onClick={() => setOpenMobile(false)}>
+									<Link
+										to={subItem.url}
+										onClick={() => setSidebarMobileOpen(false)}
+									>
 										{subItem.icon && <subItem.icon />}
 										<span>{subItem.title}</span>
 										{subItem.badge && <NavBadge>{subItem.badge}</NavBadge>}

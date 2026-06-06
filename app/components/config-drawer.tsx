@@ -1,4 +1,4 @@
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useResetAtom } from "jotai/utils";
 import { CircleCheck, RotateCcw, Settings } from "lucide-react";
 import { RadioGroup } from "radix-ui";
@@ -31,17 +31,17 @@ import {
 	layoutVariantDirtyAtom,
 	type Variant,
 } from "@/stores/layout";
+import { sidebarStateAtom } from "@/stores/sidebar";
 import { useResetTheme, useTheme } from "@/stores/theme";
-import { useSidebar } from "./ui/sidebar";
 
 export function ConfigDrawer() {
-	const { setOpen } = useSidebar();
+	const setSidebarOpen = useSetAtom(sidebarStateAtom);
 	const resetTheme = useResetTheme();
 	const resetLayoutVariant = useResetAtom(layoutVariantAtom);
 	const resetLayoutCollapsible = useResetAtom(layoutCollapsibleAtom);
 
 	const handleReset = () => {
-		setOpen(true);
+		setSidebarOpen(true);
 		resetTheme();
 		resetLayoutVariant();
 		resetLayoutCollapsible();
@@ -272,13 +272,13 @@ function SidebarConfig() {
 }
 
 function LayoutConfig() {
-	const { open, setOpen } = useSidebar();
+	const [sidebarOpen, setSidebarOpen] = useAtom(sidebarStateAtom);
 
 	const [collapsible, setCollapsible] = useAtom(layoutCollapsibleAtom);
 
 	const resetLayoutCollapsible = useResetAtom(layoutVariantAtom);
 
-	const radioState = open ? "default" : collapsible;
+	const radioState = sidebarOpen ? "default" : collapsible;
 
 	return (
 		<div className="max-md:hidden">
@@ -286,7 +286,7 @@ function LayoutConfig() {
 				title="Layout"
 				showReset={radioState !== "default"}
 				onReset={() => {
-					setOpen(true);
+					setSidebarOpen(true);
 					resetLayoutCollapsible();
 				}}
 				resetAriaLabel="Reset layout options to default"
@@ -295,10 +295,10 @@ function LayoutConfig() {
 				value={radioState}
 				onValueChange={(v) => {
 					if (v === "default") {
-						setOpen(true);
+						setSidebarOpen(true);
 						return;
 					}
-					setOpen(false);
+					setSidebarOpen(false);
 					setCollapsible(v as Collapsible);
 				}}
 				className="grid w-full max-w-md grid-cols-3 gap-4"

@@ -3,7 +3,7 @@ import { CommandMenu } from "@/components/command-menu";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { SearchShortcut } from "@/components/search-shortcut";
 import { SkipToMain } from "@/components/skip-to-main";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarWrapper } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
 type AuthenticatedLayoutProps = {
@@ -12,7 +12,7 @@ type AuthenticatedLayoutProps = {
 
 export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
 	return (
-		<SidebarProvider>
+		<SidebarWrapper>
 			<SkipToMain />
 			<AppSidebar />
 			<SidebarInset
@@ -33,6 +33,6 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
 			</SidebarInset>
 			<SearchShortcut />
 			<CommandMenu />
-		</SidebarProvider>
+		</SidebarWrapper>
 	);
 }

@@ -13,8 +13,8 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-	useSidebar,
 } from "@/components/ui/sidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type TeamSwitcherProps = {
 	teams: {
@@ -25,7 +25,7 @@ type TeamSwitcherProps = {
 };
 
 export function TeamSwitcher({ teams }: TeamSwitcherProps) {
-	const { isMobile } = useSidebar();
+	const isMobile = useIsMobile();
 	const [activeTeam, setActiveTeam] = React.useState(teams[0]);
 
 	return (
