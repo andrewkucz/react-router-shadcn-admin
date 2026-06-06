@@ -1,4 +1,5 @@
 import type { Row } from "@tanstack/react-table";
+import { useSetAtom } from "jotai";
 import { Ellipsis, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { labels } from "../data/data";
 import { taskSchema } from "../data/schema";
-import { useTasks } from "./tasks-provider";
+import { currentTaskRowAtom, toggleTasksDialogAtom } from "./tasks-state";
 
 type DataTableRowActionsProps<TData> = {
 	row: Row<TData>;
@@ -27,7 +28,8 @@ export function DataTableRowActions<TData>({
 }: DataTableRowActionsProps<TData>) {
 	const task = taskSchema.parse(row.original);
 
-	const { setOpen, setCurrentRow } = useTasks();
+	const setOpen = useSetAtom(toggleTasksDialogAtom);
+	const setCurrentRow = useSetAtom(currentTaskRowAtom);
 
 	return (
 		<DropdownMenu modal={false}>

@@ -1,10 +1,18 @@
+import { useAtomValue, useSetAtom } from "jotai";
 import { UsersActionDialog } from "./users-action-dialog";
 import { UsersDeleteDialog } from "./users-delete-dialog";
 import { UsersInviteDialog } from "./users-invite-dialog";
-import { useUsers } from "./users-provider";
+import {
+	currentUserRowAtom,
+	toggleUsersDialogAtom,
+	usersDialogAtom,
+} from "./users-state";
 
 export function UsersDialogs() {
-	const { open, setOpen, currentRow, setCurrentRow } = useUsers();
+	const open = useAtomValue(usersDialogAtom);
+	const currentRow = useAtomValue(currentUserRowAtom);
+	const setOpen = useSetAtom(toggleUsersDialogAtom);
+	const setCurrentRow = useSetAtom(currentUserRowAtom);
 	return (
 		<>
 			<UsersActionDialog

@@ -1,9 +1,10 @@
+import { useSetAtom } from "jotai";
 import { MailPlus, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useUsers } from "./users-provider";
+import { toggleUsersDialogAtom } from "./users-state";
 
 export function UsersPrimaryButtons() {
-	const { setOpen } = useUsers();
+	const setOpen = useSetAtom(toggleUsersDialogAtom);
 	return (
 		<div className="flex gap-2">
 			<Button

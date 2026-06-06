@@ -1,11 +1,19 @@
+import { useAtomValue, useSetAtom } from "jotai";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { showSubmittedData } from "@/lib/show-submitted-data";
 import { TasksImportDialog } from "./tasks-import-dialog";
 import { TasksMutateDrawer } from "./tasks-mutate-drawer";
-import { useTasks } from "./tasks-provider";
+import {
+	currentTaskRowAtom,
+	tasksDialogAtom,
+	toggleTasksDialogAtom,
+} from "./tasks-state";
 
 export function TasksDialogs() {
-	const { open, setOpen, currentRow, setCurrentRow } = useTasks();
+	const open = useAtomValue(tasksDialogAtom);
+	const currentRow = useAtomValue(currentTaskRowAtom);
+	const setOpen = useSetAtom(toggleTasksDialogAtom);
+	const setCurrentRow = useSetAtom(currentTaskRowAtom);
 	return (
 		<>
 			<TasksMutateDrawer

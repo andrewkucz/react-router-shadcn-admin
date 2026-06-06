@@ -1,4 +1,5 @@
 import type { Row } from "@tanstack/react-table";
+import { useSetAtom } from "jotai";
 import { Ellipsis, Trash2, UserPen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,14 +11,15 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { User } from "../data/schema";
-import { useUsers } from "./users-provider";
+import { currentUserRowAtom, toggleUsersDialogAtom } from "./users-state";
 
 type DataTableRowActionsProps = {
 	row: Row<User>;
 };
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
-	const { setOpen, setCurrentRow } = useUsers();
+	const setOpen = useSetAtom(toggleUsersDialogAtom);
+	const setCurrentRow = useSetAtom(currentUserRowAtom);
 	return (
 		<DropdownMenu modal={false}>
 			<DropdownMenuTrigger asChild>
