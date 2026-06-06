@@ -1,3 +1,4 @@
+import { useAtom } from "jotai";
 import { ArrowRight, ChevronRight, Laptop, Moon, Sun } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router";
@@ -10,7 +11,7 @@ import {
 	CommandList,
 	CommandSeparator,
 } from "@/components/ui/command";
-import { useSearch } from "@/stores/search-provider";
+import { searchOpenAtom } from "@/stores/search";
 import { useSetTheme } from "@/stores/theme";
 import { sidebarData } from "./layout/data/sidebar-data";
 import { ScrollArea } from "./ui/scroll-area";
@@ -18,7 +19,7 @@ import { ScrollArea } from "./ui/scroll-area";
 export function CommandMenu() {
 	const navigate = useNavigate();
 	const setTheme = useSetTheme();
-	const { open, setOpen } = useSearch();
+	const [open, setOpen] = useAtom(searchOpenAtom);
 
 	const runCommand = React.useCallback(
 		(command: () => unknown) => {

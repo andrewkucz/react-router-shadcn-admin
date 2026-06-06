@@ -1,6 +1,7 @@
+import { useSetAtom } from "jotai";
 import { SearchIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useSearch } from "@/stores/search-provider";
+import { searchOpenAtom } from "@/stores/search";
 import { Button } from "./ui/button";
 
 export function Search({
@@ -8,7 +9,7 @@ export function Search({
 	placeholder = "Search",
 	...props
 }: React.ComponentProps<"button"> & { placeholder?: string }) {
-	const { setOpen } = useSearch();
+	const setSearchOpen = useSetAtom(searchOpenAtom);
 	return (
 		<Button
 			{...props}
@@ -18,7 +19,7 @@ export function Search({
 				className,
 			)}
 			aria-keyshortcuts="Meta+K Control+K"
-			onClick={() => setOpen(true)}
+			onClick={() => setSearchOpen(true)}
 		>
 			<SearchIcon
 				aria-hidden="true"
