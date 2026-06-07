@@ -4,6 +4,7 @@ import { CommandMenu } from "@/components/command-menu";
 import { ConfigDrawer } from "@/components/config-drawer";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { Header } from "@/components/layout/header";
+import { RouteBreadcrumbs } from "@/components/layout/route-breadcrumbs";
 import type { TopNavLink } from "@/components/layout/top-nav";
 import { TopNav } from "@/components/layout/top-nav";
 import { ProfileDropdown } from "@/components/profile-dropdown";
@@ -106,7 +107,9 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
 						{topNavLinks ? (
 							<TopNav links={topNavLinks} className="me-auto" />
 						) : (
-							<div className="me-auto">breadcrumbs here</div>
+							<div className="me-auto">
+								<RouteBreadcrumbs />
+							</div>
 						)}
 						<Search />
 						<ThemeSwitch />
