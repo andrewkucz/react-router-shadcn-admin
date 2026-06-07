@@ -78,6 +78,8 @@ const mutation = useMutation(trpc.<router>.<procedure>.mutationOptions());
 
 Prefer React Query's built-in lifecycle callbacks for side effects: use `onSuccess`, `onError`, and related options on the useQuery or useMutation  hooks when needed instead of ad hoc effect/state wiring. Derive UI state directly from the `useQuery`/`useMutation` result wherever possible rather than copying server state into additional `useState`.
 
+User-triggered async network calls should use `useMutation` or a library hook built on it. Do not wrap network requests in ad hoc async handlers with separate local pending/error state.
+
 ## URL State Conventions
 
 - `nuqs` is the standard library for URL query param state management in client components
@@ -92,7 +94,8 @@ Prefer React Query's built-in lifecycle callbacks for side effects: use `onSucce
 
 - server-side: `auth` exported from `@/lib/auth/server`
 - client-side: `authClient` from `@/lib/auth/browser`
-- for client-side query and mutation hooks, and server-side helpers see library `@better-auth-ui/react` (docs: https://better-auth-ui.com/llms.txt)
+- for client-side query and mutation hooks, and server-side helpers use library `@better-auth-ui/react`
+- prefer the purpose-built `@better-auth-ui/react` hooks for client auth flows, e.g. social sign-in via `useSignInSocial`, instead of calling `authClient` methods directly in components (docs: https://better-auth-ui.com/llms.txt)
 
 Auth tables are generated. After changing `app/lib/auth/server.ts`, run `npm run gen:auth`. Only generate and apply a migration when the user explicitly asks for schema changes to be committed.
 
