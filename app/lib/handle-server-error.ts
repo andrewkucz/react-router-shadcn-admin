@@ -25,5 +25,17 @@ export function handleServerError(error: unknown) {
 		}
 	}
 
+	if (
+		error &&
+		error instanceof Error &&
+		error.cause &&
+		typeof error.cause === "object" &&
+		"message" in error.cause &&
+		"code" in error.cause &&
+		typeof error.cause.code === "string" &&
+		typeof error.cause.message === "string"
+	) {
+		errMsg = error.cause.message;
+	}
 	toast.error(errMsg);
 }

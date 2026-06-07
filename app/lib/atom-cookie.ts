@@ -19,7 +19,7 @@ export const atomCookie = <T>(key: string, defaultValue: T) => {
 	const a = atomWithStorage(
 		key,
 		defaultValue,
-		typeof window === "undefined" ? undefined : createCookieStorage(),
+		typeof window === "undefined" ? createJSONStorage() : createCookieStorage(),
 	);
 	a.debugLabel = key;
 	return a;
@@ -43,7 +43,7 @@ export const getAtomServerValue = <T>(
 	try {
 		return JSON.parse(parsed[key]) as T;
 	} catch {
-		console.error("Unable to parse cookie as json");
+		console.error("Unable to parse cookie as json", key, parsed[key]);
 		return defaultValue;
 	}
 };
