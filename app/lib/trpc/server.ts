@@ -1,5 +1,5 @@
 import { initTRPC } from "@trpc/server";
-
+import superjson from "superjson";
 import { authPlugin } from "./auth-plugin";
 
 export const createContext = async (opts: { req: Request }) => {
@@ -8,7 +8,9 @@ export const createContext = async (opts: { req: Request }) => {
 
 export type Context = Awaited<ReturnType<typeof createContext>>;
 
-const t = initTRPC.context<Context>().create();
+const t = initTRPC.context<Context>().create({
+	transformer: superjson,
+});
 
 /**
  * Export reusable router and procedure helpers
