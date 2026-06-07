@@ -10,12 +10,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
+export type TopNavLink = {
+	title: string;
+	href: string;
+	disabled?: boolean;
+};
+
 type TopNavProps = React.HTMLAttributes<HTMLElement> & {
-	links: {
-		title: string;
-		href: string;
-		disabled?: boolean;
-	}[];
+	links: TopNavLink[];
 };
 
 export function TopNav({ className, links, ...props }: TopNavProps) {

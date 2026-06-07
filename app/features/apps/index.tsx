@@ -1,12 +1,7 @@
 import { ArrowDownAZ, ArrowUpAZ, SlidersHorizontal } from "lucide-react";
 import { parseAsStringEnum, useQueryState } from "nuqs";
 import type { ChangeEvent } from "react";
-import { ConfigDrawer } from "@/components/config-drawer";
-import { Header } from "@/components/layout/header";
 import { Main } from "@/components/layout/main";
-import { ProfileDropdown } from "@/components/profile-dropdown";
-import { Search } from "@/components/search";
-import { ThemeSwitch } from "@/components/theme-switch";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -67,14 +62,6 @@ export function Apps() {
 
 	return (
 		<>
-			{/* ===== Top Heading ===== */}
-			<Header>
-				<Search className="me-auto" />
-				<ThemeSwitch />
-				<ConfigDrawer />
-				<ProfileDropdown />
-			</Header>
-
 			{/* ===== Content ===== */}
 			<Main fixed>
 				<div>

@@ -43,7 +43,7 @@ export function UserAuthForm({
 	const { mutate, isPending } = useSignInEmail(authClient, {
 		onSuccess() {
 			const targetPath = redirectTo || "/";
-			navigate({ pathname: targetPath }, { replace: true });
+			navigate({ pathname: targetPath });
 		},
 	});
 
