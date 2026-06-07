@@ -22,6 +22,7 @@ Adapted from: https://github.com/satnaing/shadcn-admin
 
 Also included:
 
+- [jotai](https://jotai.org/) | global state management
 - [biome](https://biomejs.dev/guides/getting-started/) | formatting and linting
 - [nuqs](https://nuqs.dev/) | url query param management
 - [@t3-oss/env-core](https://env.t3.gg/docs/introduction) | env validation
